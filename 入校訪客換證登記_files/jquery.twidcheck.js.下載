@@ -1,0 +1,78 @@
+jQuery.validator.addMethod("ROC_Citizen_ID_regex",
+	    function(citizenid, element) {
+	      citizenid = citizenid.replace(/\s+/g, "");
+	 
+	      return (
+	          this.optional(element) ||
+	          /^[A-Z]{1}[1-2]{1}[0-9]{8}$/.test(citizenid)
+	        );
+	    }, "格式有誤"
+	  );
+// 台灣身份證字號格式檢查程式
+jQuery.validator.addMethod("ROC_Citizen_ID_arithmetic",
+  function( value, element)
+  {
+	if($.trim(value)!=''){
+			if(value.length!=10) return false;
+			IDN = value;
+			IDTable = {A:10, B:11, C:12, D:13, E:14, F:15, G:16, H:17, I:34, J:18, K:19, M:21, N:22, O:35, P:23, Q:24, T:27, U:28, V:29, W:32, X:30, Z:33, L:20, R:25, S:26, Y:31};
+			LocalDigit = IDTable[IDN[0].toUpperCase()];
+			return /^[A-Za-z][1,2][\d]{8}/.test(value) && ((Math.floor(LocalDigit/10) + (LocalDigit%10)*9 + IDN[1]*8 + IDN[2]*7 + IDN[3]*6 + IDN[4]*5 + IDN[5]*4 + IDN[6]*3 + IDN[7]*2 + IDN[8]*1 + IDN[9]*1)%10==0);
+	}else{
+		return true;
+	}
+
+  }
+  , '身份證號無效'
+);
+/*
+ function(value, element, param)
+{
+    var a = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'W', 'Z', 'I', 'O');
+    var b = new Array(1, 9, 8, 7, 6, 5, 4, 3, 2, 1);
+    var c = new Array(2);
+    var d;
+    var e;
+    var f;
+    var g = 0;
+    var h = /^[a-z](1|2)\d{8}$/i;
+    if (value.search(h) == -1)
+    {
+        return false;
+    }
+    else
+    {
+        d = value.charAt(0).toUpperCase();
+        f = value.charAt(9);
+    }
+    for (var i = 0; i < 26; i++)
+    {
+        if (d == a[i])//a==a
+        {
+            e = i + 10; //10
+            c[0] = Math.floor(e / 10); //1
+            c[1] = e - (c[0] * 10); //10-(1*10)
+            break;
+        }
+    }
+    for (var i = 0; i < b.length; i++)
+    {
+        if (i < 2)
+        {
+            g += c[i] * b[i];
+        }
+        else
+        {
+            g += parseInt(value.charAt(i - 1)) * b[i];
+        }
+    }
+    if ((g % 10) == f)
+    {
+        return true;
+    }
+    if ((10 - (g % 10)) != f)
+    {
+        return false;
+    }
+    return true;
+}, "身份證字號無效");*/

@@ -1,0 +1,78 @@
+// JavaScript Document
+$.validator.addMethod(
+    "chkID",
+    function(idNumber) {
+        var nationality=""; 
+        var idHeader = "ABCDEFGHJKLMNPQRSTUVXYWZIO"; //按照轉換後權數的大小進行排序
+        var studIdNumber = idNumber.toUpperCase();
+        //驗證填入身分證字號長度及格式
+        if(studIdNumber.length != 10){
+           // alert("長度不足");
+            return false;
+        }        
+        if(isNaN(studIdNumber.substr(1,9)) || (!/^[A-Z]$/.test(studIdNumber.substr(0,1)))){
+            //alert("非本國人");               
+            if(isNaN(studIdNumber.substr(2,8)) || 
+                    (!/^[A-Z]$/.test(studIdNumber.substr(0,1))) || 
+                        (!/^[A-Z]$/.test(studIdNumber.substr(1,1)))){
+                //alert("非外籍人士居留人士");
+                return false;
+            }else{
+                nationality='nTw'; 
+            }            
+        }else{
+            nationality='TW';
+        }       
+       //本國人
+        if(nationality == 'TW'){
+            studIdNumber = (idHeader.indexOf(studIdNumber.substring(0,1))+10) +''+ studIdNumber.substr(1,9);
+            var s = parseInt(studIdNumber.substr(0,1)) + 
+            parseInt(studIdNumber.substr(1,1)) * 9 + 
+            parseInt(studIdNumber.substr(2,1)) * 8 + 
+            parseInt(studIdNumber.substr(3,1)) * 7 +            
+            parseInt(studIdNumber.substr(4,1)) * 6 + 
+            parseInt(studIdNumber.substr(5,1)) * 5 + 
+            parseInt(studIdNumber.substr(6,1)) * 4 + 
+            parseInt(studIdNumber.substr(7,1)) * 3 + 
+            parseInt(studIdNumber.substr(8,1)) * 2 + 
+            parseInt(studIdNumber.substr(9,1));
+
+            var checkNum = parseInt(studIdNumber.substr(10,1));
+            if((s % 10) == 0 || (10 - s % 10) == checkNum){
+                return true;
+            }
+            else{
+                return false;
+            }
+
+        }else if(nationality=='nTw') {
+
+            studIdNumber = (idHeader.indexOf(studIdNumber.substring(0,1))+10) + 
+            '' + ((idHeader.indexOf(studIdNumber.substr(1,1))+10) % 10) + '' + studIdNumber.substr(2,8);
+
+            var s = parseInt(studIdNumber.substr(0,1)) + 
+            parseInt(studIdNumber.substr(1,1)) * 9 + 
+            parseInt(studIdNumber.substr(2,1)) * 8 + 
+            parseInt(studIdNumber.substr(3,1)) * 7 +            
+            parseInt(studIdNumber.substr(4,1)) * 6 + 
+            parseInt(studIdNumber.substr(5,1)) * 5 + 
+            parseInt(studIdNumber.substr(6,1)) * 4 + 
+            parseInt(studIdNumber.substr(7,1)) * 3 + 
+            parseInt(studIdNumber.substr(8,1)) * 2 + 
+            parseInt(studIdNumber.substr(9,1));
+
+            //檢查號碼 = 10 - 相乘後個位數相加總和之尾數。
+            var checkNum = parseInt(studIdNumber.substr(10,1));
+            //模數 - 總和/模數(10)之餘數若等於第九碼的檢查碼，則驗證成功
+            ///若餘數為0，檢查碼就是0
+            if((s % 10) == 0 || (10 - s % 10) == checkNum){
+                return true;
+            }
+            else{
+                return false;
+            }
+
+        }
+     },
+    "身分字號異常或Resident Certificate error"
+);	
